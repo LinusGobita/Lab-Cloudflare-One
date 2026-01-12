@@ -1,0 +1,35 @@
+# Cloudflare Zero Trust Lab
+# This compose file creates an isolated internal app + tunnel connector
+
+services:
+  # The internal application (target)
+  # A simple web server that displays HTTP request info
+  internal-app:
+    image: traefik/whoami:latest
+    container_name: lab-internal-app
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    networks:
+      - zero-trust-net
+    # NOTE: No ports exposed - only accessible via tunnel
+
+  # Cloudflare Tunnel daemon (connector)
+  # Establishes outbound connection to Cloudflare Edge
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: lab-cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - zero-trust-net
+
+networks:
+  zero-trust-net:
+    driver: bridge
+    name: zt-lab-network
