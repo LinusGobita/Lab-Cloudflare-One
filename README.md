@@ -156,12 +156,15 @@ Das bedeutet: Der Tunnel ist aktiv und mit der Cloudflare Edge verbunden!
 
 Der Tunnel steht, aber Cloudflare weiss noch nicht wohin der Traffic soll. Wir konfigurieren jetzt **gleichzeitig** das Routing und den Zugriffsschutz.
 
-### 3.1 Public Hostname erstellen
+### 3.1 Public Hostnames erstellen
+
+Wir erstellen **zwei** Public Hostnames: einen für die whoami-App und einen für die Gruppen-Seite.
 
 1. Gehen Sie zurück zum Cloudflare Dashboard (wo Sie das Token kopiert haben)
 2. Klicken Sie auf **Next** (unten)
 3. Im Tab **Public Hostnames** klicken Sie **Add a public hostname**
-4. Füllen Sie das Formular aus:
+
+**Hostname 1: Whoami-App (Debugging)**
 
 | Feld | Wert |
 |------|------|
@@ -170,7 +173,20 @@ Der Tunnel steht, aber Cloudflare weiss noch nicht wohin der Traffic soll. Wir k
 | Service Type | `HTTP` |
 | URL | `internal-app:80` |
 
-5. Klicken Sie **Save hostname**
+4. Klicken Sie **Save hostname**
+
+**Hostname 2: Gruppen-Seite (Bearbeitbar)**
+
+5. Klicken Sie erneut **Add a public hostname**
+
+| Feld | Wert |
+|------|------|
+| Subdomain | `page` (oder z.B. `gruppe01`) |
+| Domain | Ihre Domain aus der Liste |
+| Service Type | `HTTP` |
+| URL | `group-page:80` |
+
+6. Klicken Sie **Save hostname**
 
 ### 3.2 Access Policy erstellen
 
@@ -226,6 +242,47 @@ Cf-Access-Jwt-Assertion: eyJhbGciOiJSUzI1...
 ```
 
 **Das ist der Beweis!** Cloudflare hat Ihre Identität geprüft und diesen kryptografischen Token an die App weitergeleitet. Die App weiss nun wer Sie sind - ohne eigene Login-Datenbank.
+
+---
+
+## Schritt 5: Gruppen-Seite anpassen
+
+Neben der whoami-App haben Sie auch eine eigene **bearbeitbare Webseite**. Diese können Sie individuell gestalten!
+
+### 5.1 HTML-Datei öffnen
+
+Öffnen Sie die Datei `html/index.html` im Projektordner mit einem Texteditor:
+
+```bash
+# macOS/Linux
+nano html/index.html
+# oder
+code html/index.html    # VS Code
+
+# Windows
+notepad html\index.html
+```
+
+### 5.2 Inhalte anpassen
+
+Suchen Sie nach den markierten Stellen im HTML:
+
+```html
+<!-- ========================================= -->
+<!-- HIER GRUPPENNUMMER ANPASSEN (z.B. 01)    -->
+<!-- ========================================= -->
+<h1>Gruppe XX</h1>
+```
+
+Ändern Sie `Gruppe XX` zu Ihrer Gruppennummer, z.B. `Gruppe 03`.
+
+### 5.3 Änderungen ansehen
+
+1. Speichern Sie die Datei
+2. Öffnen Sie `https://page.ihre-domain.com` im Browser
+3. Falls nötig, laden Sie die Seite neu (F5 oder Ctrl+R)
+
+**Tipp:** Sie können beliebig Text hinzufügen, Überschriften ändern oder neue Abschnitte erstellen. Die Änderungen sind sofort sichtbar!
 
 ---
 

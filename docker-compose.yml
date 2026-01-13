@@ -15,6 +15,20 @@ services:
       - zero-trust-net
     # NOTE: No ports exposed - only accessible via tunnel
 
+  # Group page - editable HTML served by nginx
+  # Students can modify html/index.html to customize their page
+  group-page:
+    image: nginx:alpine
+    container_name: lab-group-page
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+    networks:
+      - zero-trust-net
+    # NOTE: No ports exposed - only accessible via tunnel
+
   # Cloudflare Tunnel daemon (connector)
   # Establishes outbound connection to Cloudflare Edge
   tunnel:
