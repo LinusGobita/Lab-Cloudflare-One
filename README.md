@@ -39,15 +39,37 @@ Willkommen zum Praxis-Workshop! In diesem Lab implementieren wir eine moderne Si
 
 Wir nutzen das Cloudflare "Zero Trust Dashboard" zur Konfiguration.
 
+### 1.1 Zum Zero Trust Dashboard navigieren
+
 1. Melden Sie sich im [Zero Trust Dashboard](https://one.dash.cloudflare.com/) an
-2. Navigieren Sie zu **Networks** > **Tunnels**
-3. Klicken Sie auf **Create a tunnel**
-4. Wählen Sie **Cloudflared** als Connector-Typ und klicken Sie **Next**
+2. Navigieren Sie in der linken Sidebar zu **Networks** > **Connectors**
+
+![Networks > Connectors](docs/screenshots/02-networks-connectors.png)
+
+### 1.2 Tunnel erstellen
+
+3. Klicken Sie auf **Add a tunnel**
+4. Wählen Sie **Cloudflared** (Recommended) und klicken Sie **Select Cloudflared**
+
+![Tunnel-Typ auswählen](docs/screenshots/03-select-tunnel-type.png)
+
 5. Geben Sie dem Tunnel einen Namen (z.B. `lab-tunnel-01`) und klicken Sie **Save tunnel**
+
+![Tunnel benennen](docs/screenshots/04-name-tunnel.png)
+
+### 1.3 Token kopieren
+
 6. Im Fenster "Install and run a connector":
    - Wählen Sie oben **Docker** als Betriebssystem
-   - Suchen Sie im angezeigten Befehl nach dem Token (beginnt mit `eyJhIjoi...`)
-   - **Kopieren Sie nur den Token-String** in die Zwischenablage
+   - Sie sehen einen Docker-Befehl wie diesen:
+
+![Docker-Befehl mit Token](docs/screenshots/06-install-connector-docker.png)
+
+```
+docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token eyJhIjoiNWY4OD...
+```
+
+7. **Kopieren Sie NUR den Token** (der lange String nach `--token`, beginnend mit `eyJ...`)
 
 ---
 
@@ -65,16 +87,45 @@ Wir nutzen das Cloudflare "Zero Trust Dashboard" zur Konfiguration.
 
 ### 2.2 Token konfigurieren
 
-Erstellen Sie eine `.env` Datei im Projektordner:
+Hier fügen Sie das Token ein, das Sie in **Schritt 1.3** aus dem Cloudflare Dashboard kopiert haben.
+
+**1. Template-Datei kopieren:**
 
 ```bash
-# Kopieren Sie das Template
 cp .env.example .env
-
-# Öffnen Sie die Datei und fügen Sie Ihr Token ein
-# Die Datei sollte so aussehen:
-# TUNNEL_TOKEN=eyJhIjoiYWJj...
 ```
+
+**2. Token in die `.env` Datei einfügen:**
+
+Öffnen Sie die `.env` Datei mit einem Texteditor:
+
+```bash
+# macOS/Linux
+nano .env
+# oder
+code .env    # falls VS Code installiert ist
+
+# Windows (PowerShell)
+notepad .env
+```
+
+**3. Token eintragen:**
+
+Ersetzen Sie `your-token-here` mit Ihrem kopierten Token:
+
+```bash
+# VORHER:
+TUNNEL_TOKEN=your-token-here
+
+# NACHHER (Beispiel):
+TUNNEL_TOKEN=eyJhIjoiNWY4ODEzNDRjNmEwZjdmZjhmMGE1Nzc1MGNjYTcy...
+```
+
+**Wichtig:**
+- Kopieren Sie **nur** den Token-String, nicht den gesamten Docker-Befehl
+- Der Token beginnt immer mit `eyJ` (Base64-kodiertes JSON)
+- Keine Anführungszeichen um den Token setzen
+- Keine Leerzeichen vor oder nach dem `=`
 
 ### 2.3 Container starten
 
